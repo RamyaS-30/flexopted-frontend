@@ -43,13 +43,13 @@ const CourseDetail = () => {
 
       try {
         const courseRes = await axios.get(
-        `http://localhost:5000/api/courses/${id}`,
+        `https://flexopted-backend.onrender.com/api/courses/${id}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
         setCourse(courseRes.data);
 
         const progressRes = await axios.get(
-          `http://localhost:5000/api/courses/${id}/progress`,
+          `https://flexopted-backend.onrender.com/api/courses/${id}/progress`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setProgress(progressRes.data.completedVideos || []);
@@ -104,7 +104,7 @@ const CourseDetail = () => {
 
     try {
       await axios.post(
-        `http://localhost:5000/api/courses/${id}/progress`,
+        `https://flexopted-backend.onrender.com/api/courses/${id}/progress`,
         { videoIndex: index, percent: clampedPercent },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -221,7 +221,7 @@ const CourseDetail = () => {
                     />
                   ) : (
                     <video
-                      src={link.startsWith("http") ? link : `http://localhost:5000${link}`}
+                      src={link.startsWith("http") ? link : `https://flexopted-backend.onrender.com${link}`}
                       controls
                       className="w-full h-48 rounded-lg bg-black"
                       onTimeUpdate={(e) =>
