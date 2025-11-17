@@ -18,9 +18,9 @@ export default function Signup() {
     setError(null);
 
     try {
-      await axios.post('http://localhost:5000/api/auth/signup', { name, email, password, role });
+      await axios.post('https://flexopted-backend.onrender.com/api/auth/signup', { name, email, password, role });
 
-      const loginRes = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+      const loginRes = await axios.post('https://flexopted-backend.onrender.com/api/auth/login', { email, password });
 
       login(loginRes.data.user, loginRes.data.token);
       navigate('/');
