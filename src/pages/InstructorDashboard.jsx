@@ -32,7 +32,7 @@ export default function InstructorDashboard() {
   const fetchStudentsForCourse = async (courseId) => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/courses/${courseId}/students`,
+        `https://flexopted-backend.onrender.com/api/courses/${courseId}/students`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setStudentsByCourse(prev => ({ ...prev, [courseId]: res.data }));
@@ -45,7 +45,7 @@ export default function InstructorDashboard() {
     if (!token) return;
     try {
       setLoading(true);
-      const res = await axios.get("http://localhost:5000/api/courses", config);
+      const res = await axios.get("https://flexopted-backend.onrender.com/api/courses", config);
       setCourses(res.data);
       res.data.forEach(course => fetchStudentsForCourse(course.id));
     } catch (err) {
@@ -67,9 +67,9 @@ export default function InstructorDashboard() {
 
     try {
       if (editingCourseId) {
-        await axios.put(`http://localhost:5000/api/courses/${editingCourseId}`, form, config);
+        await axios.put(`https://flexopted-backend.onrender.com/api/courses/${editingCourseId}`, form, config);
       } else {
-        await axios.post("http://localhost:5000/api/courses", form, config);
+        await axios.post("https://flexopted-backend.onrender.com/api/courses", form, config);
       }
       setForm({ title: "", description: "", instructor: user.name });
       setEditingCourseId(null);
@@ -93,7 +93,7 @@ export default function InstructorDashboard() {
     if (!window.confirm("Are you sure you want to delete this course?")) return;
 
     try {
-      await axios.delete(`http://localhost:5000/api/courses/${id}`, config);
+      await axios.delete(`https://flexopted-backend.onrender.com/api/courses/${id}`, config);
       fetchCourses();
     } catch (err) {
       console.error("Error deleting course:", err);
@@ -109,7 +109,7 @@ export default function InstructorDashboard() {
 
     try {
       await axios.post(
-        `http://localhost:5000/api/courses/${editingCourseId}/upload-video`,
+        `https://flexopted-backend.onrender.com/api/courses/${editingCourseId}/upload-video`,
         formData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -127,7 +127,7 @@ export default function InstructorDashboard() {
 
     try {
       await axios.post(
-        `http://localhost:5000/api/courses/${editingCourseId}/add-link`,
+        `https://flexopted-backend.onrender.com/api/courses/${editingCourseId}/add-link`,
         { link: videoLink },
         { headers: { Authorization: `Bearer ${token}` } }
       );
