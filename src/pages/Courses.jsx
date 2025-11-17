@@ -13,14 +13,14 @@ const Courses = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/courses');
+        const res = await axios.get('https://flexopted-backend.onrender.com/api/courses');
         setCourses(res.data);
 
         if (token) {
           const enrollmentStatus = {};
           for (let course of res.data) {
             try {
-              await axios.get(`http://localhost:5000/api/courses/${course.id}`, {
+              await axios.get(`https://flexopted-backend.onrender.com/api/courses/${course.id}`, {
                 headers: { Authorization: `Bearer ${token}` },
               });
               enrollmentStatus[course.id] = true;
@@ -49,7 +49,7 @@ const Courses = () => {
 
     try {
       await axios.post(
-        `http://localhost:5000/api/courses/${courseId}/enroll`,
+        `https://flexopted-backend.onrender.com/api/courses/${courseId}/enroll`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
