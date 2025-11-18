@@ -32,7 +32,7 @@ export default function InstructorDashboard() {
   const fetchStudentsForCourse = async (courseId) => {
     try {
       const res = await axios.get(
-        `https://flexopted-backend.onrender.com/api/courses/${courseId}/students`,
+        `http://localhost:5000/api/courses/${courseId}/students`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setStudentsByCourse(prev => ({ ...prev, [courseId]: res.data }));
@@ -45,7 +45,7 @@ export default function InstructorDashboard() {
     if (!token) return;
     try {
       setLoading(true);
-      const res = await axios.get("https://flexopted-backend.onrender.com/api/courses", config);
+      const res = await axios.get("http://localhost:5000/api/courses", config);
       setCourses(res.data);
       res.data.forEach(course => fetchStudentsForCourse(course.id));
     } catch (err) {
@@ -67,9 +67,9 @@ export default function InstructorDashboard() {
 
     try {
       if (editingCourseId) {
-        await axios.put(`https://flexopted-backend.onrender.com/api/courses/${editingCourseId}`, form, config);
+        await axios.put(`http://localhost:5000/api/courses/${editingCourseId}`, form, config);
       } else {
-        await axios.post("https://flexopted-backend.onrender.com/api/courses", form, config);
+        await axios.post("http://localhost:5000/api/courses", form, config);
       }
       setForm({ title: "", description: "", instructor: user.name });
       setEditingCourseId(null);
@@ -93,7 +93,7 @@ export default function InstructorDashboard() {
     if (!window.confirm("Are you sure you want to delete this course?")) return;
 
     try {
-      await axios.delete(`https://flexopted-backend.onrender.com/api/courses/${id}`, config);
+      await axios.delete(`http://localhost:5000/api/courses/${id}`, config);
       fetchCourses();
     } catch (err) {
       console.error("Error deleting course:", err);
@@ -109,7 +109,7 @@ export default function InstructorDashboard() {
 
     try {
       await axios.post(
-        `https://flexopted-backend.onrender.com/api/courses/${editingCourseId}/upload-video`,
+        `http://localhost:5000/api/courses/${editingCourseId}/upload-video`,
         formData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -127,7 +127,7 @@ export default function InstructorDashboard() {
 
     try {
       await axios.post(
-        `https://flexopted-backend.onrender.com/api/courses/${editingCourseId}/add-link`,
+        `http://localhost:5000/api/courses/${editingCourseId}/add-link`,
         { link: videoLink },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -168,16 +168,16 @@ export default function InstructorDashboard() {
 
       <div className="flex flex-col md:flex-row min-h-screen w-full">
         {/* Sidebar */}
-        <aside className="bg-blue-50/90 md:w-1/3 flex flex-col items-center justify-start gap-6 p-8 sticky top-0 h-screen">
+        <aside className="bg-blue-50/90 md:w-1/3 flex flex-col items-center justify-start gap-6 p-6 md:p-8 sticky top-0 h-fit md:h-screen">
           <div className="relative group">
-            <div className="w-28 h-28 bg-gradient-to-br from-green-400 to-green-600 text-white text-4xl font-bold rounded-full flex items-center justify-center shadow-lg">
+            <div className="w-20 h-20 md:w-28 md:h-28 bg-gradient-to-br from-green-400 to-green-600 text-white text-3xl md:text-4xl font-bold rounded-full flex items-center justify-center shadow-lg">
               {user.name[0].toUpperCase()}
             </div>
-            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full bg-gray-800 text-white text-sm px-3 py-1 rounded opacity-0 group-hover:opacity-100 transition">
+            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full bg-gray-800 text-white text-xs md:text-sm px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition">
               {user.email}
             </div>
           </div>
-          <p className="text-2xl font-semibold text-gray-800">Hello, {user.name}!</p>
+          <p className="text-xl md:text-2xl font-semibold text-gray-800">Hello, {user.name}!</p>
 
           {/* Stats */}
           <div className="w-full flex justify-around mt-6 gap-4">
@@ -204,27 +204,27 @@ export default function InstructorDashboard() {
                     d="M12 14l6.16-3.422A12.083 12.083 0 0112 21a12.083 12.083 0 01-6.16-10.422L12 14z"
                   />
                 </svg>
-                <p className="text-gray-800 font-semibold">Courses</p>
+                <p className="text-gray-800 font-semibold text-sm md:text-base">Courses</p>
               </div>
-              <p className="text-gray-900 text-2xl font-bold">{courses.length}</p>
+              <p className="text-gray-900 text-xl md:text-2xl font-bold">{courses.length}</p>
             </div>
           </div>
 
           <button
             onClick={logout}
-            className="mt-auto px-6 py-3 bg-red-500 text-white rounded-xl hover:bg-red-600 shadow transition w-full sm:w-auto"
+            className="mt-auto px-4 md:px-6 py-2 md:py-3 bg-red-500 text-white rounded-xl hover:bg-red-600 shadow transition w-full sm:w-auto"
           >
             Logout
           </button>
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 p-10 overflow-auto">
-          <h1 className="text-3xl font-bold mb-6 text-gray-800">Instructor Dashboard</h1>
+        <main className="flex-1 p-4 md:p-10 overflow-auto">
+          <h1 className="text-2xl md:text-3xl font-bold mb-6 text-gray-800">Instructor Dashboard</h1>
 
           {/* Add/Edit Course Form */}
-          <section className="bg-white p-6 rounded-xl shadow mb-8 max-w-4xl mx-auto">
-            <h2 className="text-2xl font-bold text-blue-900 mb-4 text-center">
+          <section className="bg-white p-4 md:p-6 rounded-xl shadow mb-8 max-w-4xl mx-auto">
+            <h2 className="text-xl md:text-2xl font-bold text-blue-900 mb-4 text-center">
               {editingCourseId ? "Edit Course" : "Add New Course"}
             </h2>
 
@@ -235,7 +235,7 @@ export default function InstructorDashboard() {
                 placeholder="Course Title"
                 value={form.title}
                 onChange={handleChange}
-                className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 col-span-2"
+                className="p-2 md:p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 col-span-2"
                 required
               />
               <textarea
@@ -243,30 +243,30 @@ export default function InstructorDashboard() {
                 placeholder="Course Description"
                 value={form.description}
                 onChange={handleChange}
-                className="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 col-span-2"
+                className="p-2 md:p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 col-span-2"
                 required
               ></textarea>
               <button
                 type="submit"
-                className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 font-medium col-span-2"
+                className="bg-blue-500 text-white px-4 md:px-6 py-2 md:py-3 rounded-lg hover:bg-blue-600 font-medium col-span-2"
               >
                 {editingCourseId ? "Update Course" : "Add Course"}
               </button>
             </form>
           </section>
 
-          {/* Courses List with horizontal scroll */}
+          {/* Courses List */}
           {loading ? (
             <p className="text-gray-600 text-center">Loading courses...</p>
           ) : courses.length === 0 ? (
             <p className="text-gray-600 text-center">No courses available.</p>
           ) : (
-            <div className="relative max-w-6xl mx-auto">
+            <div className="relative max-w-full mx-auto">
               {/* Left Arrow */}
-              {courses.length > 3 && (
+              {courses.length > 1 && (
                 <button
                   onClick={() => scroll("left")}
-                  className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full shadow p-2 hover:bg-gray-100"
+                  className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full shadow p-2 hover:bg-gray-100 hidden sm:flex"
                 >
                   &#8592;
                 </button>
@@ -274,17 +274,16 @@ export default function InstructorDashboard() {
 
               <div
                 ref={scrollRef}
-                className="flex gap-6 overflow-hidden scrollbar-hide"
+                className="flex gap-4 sm:gap-6 overflow-x-auto scrollbar-hide snap-x snap-mandatory scroll-smooth"
               >
                 {courses.map(course => (
                   <div
                     key={course.id}
-                    className="flex-shrink-0 w-[calc((100%/3)-16px)] bg-white p-6 rounded-xl shadow-md hover:shadow-xl transform hover:scale-105 transition duration-300 flex flex-col justify-between"
+                    className="flex-shrink-0 w-full sm:w-[calc((100%/3)-1rem)] md:w-[calc((100%/3)-1.5rem)] bg-white p-4 md:p-6 rounded-xl shadow-md hover:shadow-xl transform hover:scale-105 transition duration-300 flex flex-col justify-between snap-start"
                   >
-                    {/* Card content */}
                     <div>
                       <h3 className="text-lg font-semibold mb-2 text-gray-800">{course.title}</h3>
-                      <p className="text-gray-600 mb-3 line-clamp-4">{course.description}</p>
+                      <p className="text-gray-600 mb-2 line-clamp-4">{course.description}</p>
 
                       <div className="flex flex-wrap gap-2 mb-2">
                         {course.videoLinks?.length > 0 && (
@@ -301,21 +300,21 @@ export default function InstructorDashboard() {
 
                       <p className="text-sm text-gray-500">Instructor: {course.instructor}</p>
 
-                      {studentsByCourse[course.id] && studentsByCourse[course.id].length > 0 && (
-  <div className="mt-2">
-    <p className="text-sm font-semibold text-gray-700 mb-1">Enrolled Students:</p>
-    <div className="max-h-20 overflow-y-auto border rounded p-2 bg-gray-50">
-      <ul className="list-disc list-inside text-sm text-gray-600">
-        {studentsByCourse[course.id].map(student => (
-          <li key={student.id}>{student.name} ({student.email})</li>
-        ))}
-      </ul>
-    </div>
-  </div>
-)}
+                      {studentsByCourse[course.id]?.length > 0 && (
+                        <div className="mt-2">
+                          <p className="text-sm font-semibold text-gray-700 mb-1">Enrolled Students:</p>
+                          <div className="max-h-20 overflow-y-auto border rounded p-2 bg-gray-50">
+                            <ul className="list-disc list-inside text-sm text-gray-600">
+                              {studentsByCourse[course.id].map(student => (
+                                <li key={student.id}>{student.name} ({student.email})</li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                      )}
                     </div>
 
-                    <div className="flex gap-2 mt-4">
+                    <div className="flex gap-2 mt-4 flex-wrap">
                       <button
                         onClick={() => handleEdit(course)}
                         className="flex-1 bg-yellow-400 text-white py-2 rounded-lg hover:bg-yellow-500 transition"
@@ -348,10 +347,10 @@ export default function InstructorDashboard() {
               </div>
 
               {/* Right Arrow */}
-              {courses.length > 3 && (
+              {courses.length > 1 && (
                 <button
                   onClick={() => scroll("right")}
-                  className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full shadow p-2 hover:bg-gray-100"
+                  className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full shadow p-2 hover:bg-gray-100 hidden sm:flex"
                 >
                   &#8594;
                 </button>
@@ -361,28 +360,28 @@ export default function InstructorDashboard() {
 
           {/* Video Modal */}
           {showVideoModal && (
-            <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 animate-fadeIn">
-              <div className="bg-white w-full max-w-3xl p-6 rounded-xl shadow-xl relative">
-                <h2 className="text-2xl font-semibold mb-4">Add Course Video</h2>
+            <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
+              <div className="bg-white w-full max-w-3xl p-4 md:p-6 rounded-xl shadow-xl relative">
+                <h2 className="text-xl md:text-2xl font-semibold mb-4">Add Course Video</h2>
 
                 {/* Tabs */}
-                <div className="flex gap-3 border-b pb-3 mb-4">
+                <div className="flex gap-2 md:gap-3 border-b pb-2 mb-4">
                   <button
                     onClick={() => setUploadMode("file")}
-                    className={`px-4 py-2 rounded-lg ${uploadMode === "file" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
+                    className={`px-3 py-1 md:px-4 md:py-2 rounded-lg ${uploadMode === "file" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
                   >
                     Upload File
                   </button>
                   <button
                     onClick={() => setUploadMode("link")}
-                    className={`px-4 py-2 rounded-lg ${uploadMode === "link" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
+                    className={`px-3 py-1 md:px-4 md:py-2 rounded-lg ${uploadMode === "link" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
                   >
                     Add Video Link
                   </button>
                 </div>
 
                 {uploadMode === "file" && (
-                  <div className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-2 md:gap-4">
                     <input
                       key={videoFile ? videoFile.name : "empty"}
                       type="file"
@@ -394,7 +393,7 @@ export default function InstructorDashboard() {
                     <button
                       onClick={handleVideoUpload}
                       disabled={!videoFile}
-                      className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                      className="px-4 md:px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
                     >
                       Upload Video
                     </button>
@@ -402,7 +401,7 @@ export default function InstructorDashboard() {
                 )}
 
                 {uploadMode === "link" && (
-                  <div className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-2 md:gap-4">
                     <input
                       type="text"
                       placeholder="Enter YouTube / Vimeo / Drive URL"
@@ -412,7 +411,7 @@ export default function InstructorDashboard() {
                     />
                     <button
                       onClick={handleAddLink}
-                      className="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+                      className="px-4 md:px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
                     >
                       Add Link
                     </button>
@@ -425,7 +424,7 @@ export default function InstructorDashboard() {
                     setVideoFile(null);
                     setVideoLink("");
                   }}
-                  className="mt-6 px-6 py-2 bg-gray-300 rounded-lg hover:bg-gray-400 absolute top-4 right-4"
+                  className="mt-4 md:mt-6 px-4 md:px-6 py-2 bg-gray-300 rounded-lg hover:bg-gray-400 absolute top-4 right-4"
                 >
                   Close
                 </button>
