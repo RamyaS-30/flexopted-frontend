@@ -100,50 +100,35 @@ export default function InstructorDashboard() {
     }
   };
 
-  const CHUNK_SIZE = 5 * 1024 * 1024; // 5MB per chunk
+  const handleVideoUpload = async () => {
+    console.log("handleVideoUpload called");
+    console.log("Selected file:", videoFile);
+    console.log("Editing course ID:", editingCourseId);
+    
+    if (!videoFile) return alert("Please select a video file");
+    if (!editingCourseId) return alert("No course selected for video upload");
 
-const handleVideoUpload = async () => {
-  if (!videoFile) return alert("Please select a video file");
-  if (!editingCourseId) return alert("No course selected for video upload");
-
-  const totalChunks = Math.ceil(videoFile.size / CHUNK_SIZE);
-
-  for (let i = 0; i < totalChunks; i++) {
-    const chunk = videoFile.slice(i * CHUNK_SIZE, (i + 1) * CHUNK_SIZE);
     const formData = new FormData();
-    formData.append("videoChunk", chunk);
-    formData.append("chunkIndex", i);
-    formData.append("totalChunks", totalChunks);
+    formData.append("video", videoFile);
 
     try {
       await axios.post(
         `https://flexopted-backend.onrender.com/api/courses/${editingCourseId}/upload-video`,
         formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          onUploadProgress: (progressEvent) => {
-            const percentCompleted = Math.round(
-              ((i * CHUNK_SIZE + progressEvent.loaded) / videoFile.size) * 100
-            );
+        { headers: { Authorization: `Bearer ${token}` },
+          onUploadProgress: progressEvent => {
+            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
             console.log(`Upload progress: ${percentCompleted}%`);
-          },
+        }
         }
       );
+      setShowVideoModal(false);
+      setVideoFile(null);
+      fetchCourses();
     } catch (err) {
-      console.error("Error uploading chunk:", err);
-      alert("Error uploading video chunk. Upload aborted.");
-      return;
+      console.error("Error uploading video:", err);
     }
-  }
-
-  setShowVideoModal(false);
-  setVideoFile(null);
-  fetchCourses();
-  alert("Video uploaded successfully!");
-};
-
+  };
 
   const handleAddLink = async () => {
     if (!videoLink.trim()) return alert("Please enter a video URL");
