@@ -117,7 +117,7 @@ const handleVideoUpload = async () => {
 
     try {
       await axios.post(
-        `https://flexopted-backend.onrender.com/api/courses/${editingCourseId}/upload-video-chunk`,
+        `https://flexopted-backend.onrender.com/api/courses/${editingCourseId}/upload-video`,
         formData,
         {
           headers: {
