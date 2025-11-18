@@ -9,6 +9,8 @@ export default function InstructorDashboard() {
   const [form, setForm] = useState({ title: "", description: "", instructor: "" });
   const [editingCourseId, setEditingCourseId] = useState(null);
   const [studentsByCourse, setStudentsByCourse] = useState({});
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isUploading, setIsUploading] = useState(false);
 
   // Video modal states
   const [showVideoModal, setShowVideoModal] = useState(false);
@@ -101,34 +103,43 @@ export default function InstructorDashboard() {
   };
 
   const handleVideoUpload = async () => {
-    console.log("handleVideoUpload called");
-    console.log("Selected file:", videoFile);
-    console.log("Editing course ID:", editingCourseId);
-    
-    if (!videoFile) return alert("Please select a video file");
-    if (!editingCourseId) return alert("No course selected for video upload");
+  console.log("handleVideoUpload called");
+  console.log("Selected file:", videoFile);
 
-    const formData = new FormData();
-    formData.append("video", videoFile);
+  if (!videoFile) return alert("Please select a video file");
+  if (!editingCourseId) return alert("No course selected for video upload");
 
-    try {
-      await axios.post(
-        `https://flexopted-backend.onrender.com/api/courses/${editingCourseId}/upload-video`,
-        formData,
-        { headers: { Authorization: `Bearer ${token}` },
-          onUploadProgress: progressEvent => {
-            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-            console.log(`Upload progress: ${percentCompleted}%`);
+  setIsUploading(true);
+  setUploadProgress(0);
+
+  const formData = new FormData();
+  formData.append("video", videoFile);
+
+  try {
+    await axios.post(
+      `https://flexopted-backend.onrender.com/api/courses/${editingCourseId}/upload-video`,
+      formData,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+        onUploadProgress: progressEvent => {
+          const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          setUploadProgress(percent);
+          console.log(`Upload progress: ${percent}%`);
         }
-        }
-      );
-      setShowVideoModal(false);
-      setVideoFile(null);
-      fetchCourses();
-    } catch (err) {
-      console.error("Error uploading video:", err);
-    }
-  };
+      }
+    );
+
+    setIsUploading(false);
+    setShowVideoModal(false);
+    setVideoFile(null);
+    fetchCourses();
+    alert("Video uploaded successfully!");
+  } catch (err) {
+    console.error("Error uploading video:", err);
+    setIsUploading(false);
+    alert("Upload failed!");
+  }
+};
 
   const handleAddLink = async () => {
     if (!videoLink.trim()) return alert("Please enter a video URL");
@@ -390,24 +401,46 @@ export default function InstructorDashboard() {
                 </div>
 
                 {uploadMode === "file" && (
-                  <div className="flex flex-col gap-2 md:gap-4">
-                    <input
-                      key={videoFile ? videoFile.name : "empty"}
-                      type="file"
-                      accept=".mp4,.mov,.mkv,.avi,.webm,.ogg,.mpeg4"
-                      onChange={e => setVideoFile(e.target.files[0])}
-                      className="border p-2 rounded"
-                    />
-                    {videoFile && <p className="text-sm text-gray-600">Selected file: {videoFile.name}</p>}
-                    <button
-                      onClick={handleVideoUpload}
-                      disabled={!videoFile}
-                      className="px-4 md:px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-                    >
-                      Upload Video
-                    </button>
-                  </div>
-                )}
+  <div className="flex flex-col gap-3">
+
+    <input
+      key={videoFile ? videoFile.name : "empty"}
+      type="file"
+      accept=".mp4,.mov,.mkv,.avi,.webm,.ogg,.mpeg4"
+      onChange={e => setVideoFile(e.target.files[0])}
+      className="border p-2 rounded"
+    />
+
+    {videoFile && <p className="text-sm text-gray-600">Selected file: {videoFile.name}</p>}
+
+    {/* Upload Button */}
+    {!isUploading && (
+      <button
+        onClick={handleVideoUpload}
+        disabled={!videoFile}
+        className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+      >
+        Upload Video
+      </button>
+    )}
+
+    {/* Upload Progress */}
+    {isUploading && (
+      <div className="w-full">
+        <p className="text-sm text-gray-700 mb-1">Uploading: {uploadProgress}%</p>
+
+        <div className="w-full bg-gray-300 rounded-full h-3 overflow-hidden">
+          <div
+            className="bg-blue-600 h-3 transition-all duration-200"
+            style={{ width: `${uploadProgress}%` }}
+          ></div>
+        </div>
+      </div>
+    )}
+
+  </div>
+)}
+
 
                 {uploadMode === "link" && (
                   <div className="flex flex-col gap-2 md:gap-4">
