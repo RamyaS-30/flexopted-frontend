@@ -115,7 +115,12 @@ export default function InstructorDashboard() {
       await axios.post(
         `https://flexopted-backend.onrender.com/api/courses/${editingCourseId}/upload-video`,
         formData,
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` },
+          onUploadProgress: progressEvent => {
+            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            console.log(`Upload progress: ${percentCompleted}%`);
+        }
+        }
       );
       setShowVideoModal(false);
       setVideoFile(null);
