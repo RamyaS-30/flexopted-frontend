@@ -101,6 +101,10 @@ export default function InstructorDashboard() {
   };
 
   const handleVideoUpload = async () => {
+    console.log("handleVideoUpload called");
+    console.log("Selected file:", videoFile);
+    console.log("Editing course ID:", editingCourseId);
+    
     if (!videoFile) return alert("Please select a video file");
     if (!editingCourseId) return alert("No course selected for video upload");
 
